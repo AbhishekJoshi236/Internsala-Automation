@@ -64,31 +64,41 @@ const profile = 'Backend Development';
         // });
         // console.log('Container inner HTML:', containerHTML);
 
-        try{
-            await internshipPage.click(".copyCoverLetterTitle", { delay: 50 }); 
-        }catch(err){
+        try {
+            await internshipPage.click(".copyCoverLetterTitle", { delay: 50 });
+        } catch (err) {
             console.log('Coverletter Box not available.');
         }
 
-        try{
-            await internshipPage.click("#check", { delay: 50 });      
-        }catch(err){
+        try {
+            await internshipPage.click("#check", { delay: 50 });
+        } catch (err) {
             console.log('CheckBox for relocation not available.');
         }
 
 
-        try{
+        try {
             await internshipPage.click("#submit", { delay: 150 });
-            console.log('Submit Btn Clicked')
-            --pageCount;
-        }catch(err){
-            console.log("Doesn't let Submit Btn Clicked");
-            continue;
+            await internshipPage.waitForTimeout(8000);
+            const successIndicator = await internshipPage.evaluate(() => {
+                const successElement = document.querySelector('#backToInternshipsCta');
+                return successElement ? true : false;
+            });
+
+            if (successIndicator) {
+                console.log('Form successfully submitted.\n\n');
+                pageCount--;
+            } else {
+                console.log('Form submission failed or not confirmed.\n\n');
+            }
+        } catch (err) {
+            console.log("Error while trying to submit the form: ", err);
+            console.log('\n\n');
         }
 
         // await internshipPage.waitForNavigation({ waitUntil: 'networkidle2' });
-        
-        
+
+
     }
 
 })();
